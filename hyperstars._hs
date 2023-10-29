@@ -1,0 +1,101 @@
+behavior Hyperstars
+
+  init
+    add .hyperstars to me
+
+    make a <div.hyperstars-slider/>
+    add [@_="install HyperstarsSlideable"] to it
+    add [@role="slider"] to it
+    add [@aria-valuenow="0"] to it
+    add [@aria-valuemin="0"] to it
+    add [@aria-valuemax="5"] to it
+    add [@aria-readonly="false"] to it
+    add [@aria-label="Star rating"] to it
+    add [@tabindex="0"] to it
+    set parent to it
+    
+    make a <div.hyperstars-empty/>
+    put it into parent
+
+    make a <div.hyperstars-selected/>
+    set the *width of it to "0px"
+    show it
+    put it at the end of parent
+
+    make a <div.hyperstars-hover/>
+    set the *width of it to "0px"
+    hide it
+    put it at the end of parent
+
+    tell <div /> in parent
+        put "★★★★★" into you
+    end
+
+    put parent into me
+
+end
+
+def calculateRawScore(element, event) 
+end
+
+behavior HyperstarsSlideable
+
+  on mouseenter
+    tell .hyperstars-hover in me
+      show you
+    end
+    tell .hyperstars-selected in me
+      hide you
+    end
+  end
+
+  on mouseleave
+    tell .hyperstars-hover in me
+      hide you
+    end
+    tell .hyperstars-selected in me
+      show you
+    end
+  end
+
+  on mousemove(event)
+    set stars to 5
+    set step to 0.5
+    measure my x, width
+    set offset to event.pageX - x
+    if offset > width then set offset to width end
+    set score to Math.ceil(offset / (width / (stars / step))) * step
+    set w to Math.round(score * (width / stars))
+    set hover to the .hyperstars-hover in me
+    pick match of "^(.+)px$" from the width of hover's style
+    set curW to it[1] as Int
+    if curW != w then
+      tell the .hyperstars-selected in me
+        hide you
+      end
+      tell the .hyperstars-hover in me
+        show you
+        set your *width to w + "px"
+      end
+    end
+  end
+
+  on click(event)
+    set stars to 5
+    set step to 0.5
+    measure my x, width
+    set offset to event.pageX - x
+    if offset > width then set offset to width end
+    set score to Math.ceil(offset / (width / (stars / step))) * step
+    set w to Math.round(score * (width / stars))
+    set @aria-valuenow to score
+    tell .hyperstars-hover in me
+      hide you
+    end
+    tell .hyperstars-selected in me
+      set your *width to w + "px"
+      show you
+    end
+  end
+
+end
