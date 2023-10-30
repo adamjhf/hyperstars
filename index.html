@@ -17,26 +17,52 @@
     input[type=range] {
       display: none;
     }
+
+    pre {
+      display: block;
+    }
   </style>
-  <link href="hyperstars.css" rel="stylesheet" type="text/css" />
+  <link href="hyperstars.css" rel="stylesheet" type="text/css">
   <script src="hyperstars._hs" type="text/hyperscript"></script>
   <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
 </head>
 
 <body>
   <h1>_hyperstars examples</h1>
-  <h2>Default:</h2>
+  <h3>Default:</h3>
+  <pre>
+    <code _="init put escapeHTML(outerHTML of next <span/>) into me"></code>
+  </pre>
   <span _="install Hyperstars()"></span>
-  <h2>With reset button:</h2>
+  <h3>With reset button:</h3>
+  <pre>
+    <code _="init put escapeHTML(outerHTML of next <span/>) into me"></code>
+  </pre>
   <span _="install Hyperstars(resettable: true)"></span>
-  <h2>With custom input:</h2>
+  <h3>With custom input:</h3>
+  <pre>
+    <code _="init put escapeHTML(outerHTML of next <span/>) into me"></code>
+  </pre>
   <span _="install Hyperstars()">
     <input type="range" min="2" max="10" step="1" value="5">
   </span>
-  <h2>Readonly/disabled:</h2>
+  <h3>Readonly/disabled:</h3>
+  <pre>
+    <code _="init put escapeHTML(outerHTML of next <span/>) into me"></code>
+  </pre>
   <span _="install Hyperstars()">
-    <input type="range" value="2.5" readonly>
+    <input type="range" value="2.5" disabled>
   </span>
+
+  <script type="text/hyperscript">
+    def escapeHTML(html)
+      js(html)
+        return html.replace(/[\u00A0-\u9999<>\&]/g,
+          i => '&#'+i.charCodeAt(0)+';')
+      end
+      return it
+    end
+  </script>
 </body>
 
 </html>

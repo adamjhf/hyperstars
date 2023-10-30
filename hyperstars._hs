@@ -39,7 +39,7 @@ behavior Hyperstars(inputHandle, resettable)
 
     if resettable then
       make a <span/>
-      put "🞨" into it
+      put "×" into it
       set span to it
       make a <button.hyperstars-reset/>
       set @type of it to "reset"
@@ -48,7 +48,6 @@ behavior Hyperstars(inputHandle, resettable)
       put span into it
       put it into me
     end
-    
 
     make a <div.hyperstars-slider/>
     set @_ of it to "install HyperstarsSlideable"
@@ -87,7 +86,7 @@ behavior Hyperstars(inputHandle, resettable)
     tell .hyperstars-selected in me
       get previous .hyperstars-empty
       measure its width
-      set initW to Math.round((value-min) * (width / stars))
+      set initW to calculateStarWidth(value, min, max, width)
       set your *width to initW + "px"
     end
 
@@ -98,7 +97,6 @@ behavior HyperstarsSlideable
 
   on mouseenter
     if @aria-readonly is "true" then exit end
-    log @aria-readonly
     tell .hyperstars-hover in me
       show you
     end
@@ -121,14 +119,10 @@ behavior HyperstarsSlideable
     if @aria-readonly is "true" then exit end
     set max to @aria-valuemax as Number
     set min to @aria-valuemin as Number
-    set stars to max - min
     set step to @data-hs-step as Number
     measure my x, width
-    set offset to pageX - x
-    if offset > width then set offset to width end
-    set value to min
-      + (Math.ceil(offset / (width / (stars / step))) * step)
-    set w to Math.round((value-min) * (width / stars))
+    set value to calculateStarValue(x, pageX, min, max, step, width)
+    set w to calculateStarWidth(value, min, max, width)
     set hover to the .hyperstars-hover in me
     pick match of "^(.+)px$" from the width of hover's style
     set curWidth to it[1] as Int
@@ -147,14 +141,10 @@ behavior HyperstarsSlideable
     if @aria-readonly is "true" then exit end
     set max to @aria-valuemax as Number
     set min to @aria-valuemin as Number
-    set stars to max - min
     set step to @data-hs-step as Number
     measure my x, width
-    set offset to pageX - x
-    if offset > width then set offset to width end
-    set value to min
-      + (Math.ceil(offset / (width / (stars / step))) * step)
-    set w to Math.round((value-min) * (width / stars))
+    set value to calculateStarValue(x, pageX, min, max, step, width)
+    set w to calculateStarWidth(value, min, max, width)
     set @aria-valuenow to value
     tell .hyperstars-hover in me
       hide you
@@ -183,4 +173,15 @@ behavior HyperstarsSlideable
     end
   end
 
+end
+
+def calculateStarValue(x, pageX, min, max, step, width)
+  set stars to max - min
+  set offset to pageX - x
+  if offset > width then set offset to width end
+  return min + (Math.ceil(offset / (width / (stars / step))) * step)
+end
+
+def calculateStarWidth(value, min, max, width)
+  return Math.round((value-min) * (width / (max-min)))
 end

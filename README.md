@@ -17,7 +17,7 @@ Triggers a `rated` event in the DOM, so can be used with HTMX, hyperscript or ot
 ## Example usage
 Import `hyperstars.css` before loading hyperscript:
 ```
-<link href="hyperstars.css" rel="stylesheet" type="text/css" />
+<link href="hyperstars.css" rel="stylesheet" type="text/css">
 <script src="hyperstars._hs" type="text/hyperscript"></script>
 <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
 ```
