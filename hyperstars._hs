@@ -1,17 +1,50 @@
-behavior Hyperstars
+behavior Hyperstars(inputHandle)
 
   init
+    -- defaults
+    set min to 0
+    set max to 5
+    set step to 0.5
+    set value to 0
+    set readonly to false
+
+    if no inputHandle then
+      if <input[type="range"] /> in me exists then
+        set inputHandle to first <input[type="range"] /> in me
+      end
+    end
+
+    if inputHandle exists then
+      hide inputHandle
+      if @min of inputHandle exists then
+        set min to @min of inputHandle
+      end
+      if @max of inputHandle exists then
+        set max to @max of inputHandle
+      end
+      if @step of inputHandle exists then
+        set step to @step of inputHandle
+      end
+      if @value of inputHandle exists then
+        set value to @value of inputHandle
+      end
+      if @readonly of inputHandle exists then
+        set readonly to true
+      end
+    end
+    
     add .hyperstars to me
 
     make a <div.hyperstars-slider/>
-    add [@_="install HyperstarsSlideable"] to it
-    add [@role="slider"] to it
-    add [@aria-valuenow="0"] to it
-    add [@aria-valuemin="0"] to it
-    add [@aria-valuemax="5"] to it
-    add [@aria-readonly="false"] to it
-    add [@aria-label="Star rating"] to it
-    add [@tabindex="0"] to it
+    set @_ of it to "install HyperstarsSlideable"
+    set @role of it to "slider"
+    set @aria-valuenow of it to value
+    set @aria-valuemin of it to min
+    set @aria-valuemax of it to max
+    set @aria-readonly of it to readonly
+    set @data-hs-step of it to step
+    set @aria-label of it to "star rating"
+    if not readonly then set @tabindex of it to 0 end
     set parent to it
     
     make a <div.hyperstars-empty/>
@@ -27,20 +60,28 @@ behavior Hyperstars
     hide it
     put it at the end of parent
 
+    set stars to max - min
     tell <div /> in parent
-        put "★★★★★" into you
+      repeat stars times
+        put "★" at the end of you
+      end
     end
 
-    put parent into me
+    put parent at the end of me
+
+    measure my width
+    tell .hyperstars-selected in me
+      set initW to Math.round((value-min) * (width / stars))
+      set your *width to initW + "px"
+    end
 
 end
 
-def calculateRawScore(element, event) 
-end
 
 behavior HyperstarsSlideable
 
   on mouseenter
+    if @aria-readonly is true then exit end
     tell .hyperstars-hover in me
       show you
     end
@@ -50,6 +91,7 @@ behavior HyperstarsSlideable
   end
 
   on mouseleave
+    if @aria-readonly is true then exit end
     tell .hyperstars-hover in me
       hide you
     end
@@ -58,18 +100,22 @@ behavior HyperstarsSlideable
     end
   end
 
-  on mousemove(event)
-    set stars to 5
-    set step to 0.5
+  on mousemove(pageX)
+    if @aria-readonly is true then exit end
+    set max to @aria-valuemax as Number
+    set min to @aria-valuemin as Number
+    set stars to max - min
+    set step to @data-hs-step as Number
     measure my x, width
-    set offset to event.pageX - x
+    set offset to pageX - x
     if offset > width then set offset to width end
-    set score to Math.ceil(offset / (width / (stars / step))) * step
-    set w to Math.round(score * (width / stars))
+    set value to min
+      + (Math.ceil(offset / (width / (stars / step))) * step)
+    set w to Math.round((value-min) * (width / stars))
     set hover to the .hyperstars-hover in me
     pick match of "^(.+)px$" from the width of hover's style
-    set curW to it[1] as Int
-    if curW != w then
+    set curWidth to it[1] as Int
+    if curWidth is not w then
       tell the .hyperstars-selected in me
         hide you
       end
@@ -80,15 +126,19 @@ behavior HyperstarsSlideable
     end
   end
 
-  on click(event)
-    set stars to 5
-    set step to 0.5
+  on mouseup(pageX)
+    if @aria-readonly is true then exit end
+    set max to @aria-valuemax as Number
+    set min to @aria-valuemin as Number
+    set stars to max - min
+    set step to @data-hs-step as Number
     measure my x, width
-    set offset to event.pageX - x
+    set offset to pageX - x
     if offset > width then set offset to width end
-    set score to Math.ceil(offset / (width / (stars / step))) * step
-    set w to Math.round(score * (width / stars))
-    set @aria-valuenow to score
+    set value to min
+      + (Math.ceil(offset / (width / (stars / step))) * step)
+    set w to Math.round((value-min) * (width / stars))
+    set @aria-valuenow to value
     tell .hyperstars-hover in me
       hide you
     end
@@ -96,6 +146,16 @@ behavior HyperstarsSlideable
       set your *width to w + "px"
       show you
     end
+  end
+
+  on touchmove(event)
+    halt the event
+    trigger mousemove(pageX: event.changedTouches[0].pageX)
+  end
+
+  on touchend(event)
+    halt the event
+    trigger mouseup(pageX: event.changedTouches[0].pageX)
   end
 
 end

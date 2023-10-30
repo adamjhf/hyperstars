@@ -1,34 +1,39 @@
 html {
-    font-size: 100px;
+  font-size: 50px;
 }
 
 .hyperstars,
 .hyperstars-slider {
-    display: inline-block;
-    position: relative;
-    line-height: 1em;
+  display: inline-block;
+  position: relative;
+  line-height: 1em;
+  cursor: default;
 }
 
 .hyperstars-slider>div {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .hyperstars-selected,
 .hyperstars-hover {
-    position: absolute;
-    display: block;
-    left: 0px;
-    top: 0px;
+  position: absolute;
+  display: block;
+  left: 0px;
+  top: 0px;
 }
 
 .hyperstars-empty {
-    color: rgb(212, 212, 212);
+  color: rgb(212, 212, 212);
 }
 
 .hyperstars-selected {
-    color: rgb(217, 53, 38);
+  color: rgb(217, 53, 38);
 }
 
 .hyperstars-hover {
-    color: rgb(242, 223, 13);
+  color: rgb(242, 223, 13);
+}
+
+.hyperstars>input[type=range] {
+  display: none;
 }
