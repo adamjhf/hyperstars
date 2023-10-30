@@ -6,13 +6,32 @@
   <meta name="viewport" content="width=device-width">
   <title>hyperstars example</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
+  <style>
+    body {
+      font-size: 50px;
+      margin: 1em;
+    }
+
+    p {
+      font-size: 30px;
+    }
+  </style>
   <script src="hyperstars._hs" type="text/hyperscript"></script>
   <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
 </head>
 
 <body>
+  <p>Default:</p>
+  <span _="install Hyperstars()"></span>
+  <p>With resettable:</p>
+  <span _="install Hyperstars(resettable: true)"></span>
+  <p>With custom input:</p>
   <span _="install Hyperstars()">
-    <input type="range" min="0" max="5" step="0.5" value="2.5" />
+    <input type="range" min="2" max="10" step="1" value="5">
+  </span>
+  <p>Readonly/disabled:</p>
+  <span _="install Hyperstars()">
+    <input type="range" value="2.5" readonly>
   </span>
 </body>
 

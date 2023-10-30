@@ -1,4 +1,4 @@
-behavior Hyperstars(inputHandle)
+behavior Hyperstars(inputHandle, resettable)
 
   init
     -- defaults
@@ -7,10 +7,11 @@ behavior Hyperstars(inputHandle)
     set step to 0.5
     set value to 0
     set readonly to false
+    if no resettable then set resettable to false end
 
     if no inputHandle then
-      if <input[type="range"] /> in me exists then
-        set inputHandle to first <input[type="range"] /> in me
+      if <input[type="range"]/> in me exists then
+        set inputHandle to first <input[type="range"]/> in me
       end
     end
 
@@ -28,12 +29,26 @@ behavior Hyperstars(inputHandle)
       if @value of inputHandle exists then
         set value to @value of inputHandle
       end
-      if @readonly of inputHandle exists then
+      if @readonly of inputHandle exists
+        or @disabled of inputHandle exists then
         set readonly to true
       end
     end
-    
+
     add .hyperstars to me
+
+    if resettable then
+      make a <span/>
+      put "🞨" into it
+      set span to it
+      make a <button.hyperstars-reset/>
+      set @type of it to "reset"
+      set @aria-label of it to "star rating reset"
+      set @_ of it to "on click send reset to next .hyperstars-slider"
+      put span into it
+      put it into me
+    end
+    
 
     make a <div.hyperstars-slider/>
     set @_ of it to "install HyperstarsSlideable"
@@ -69,8 +84,9 @@ behavior Hyperstars(inputHandle)
 
     put parent at the end of me
 
-    measure my width
     tell .hyperstars-selected in me
+      get previous .hyperstars-empty
+      measure its width
       set initW to Math.round((value-min) * (width / stars))
       set your *width to initW + "px"
     end
@@ -81,7 +97,8 @@ end
 behavior HyperstarsSlideable
 
   on mouseenter
-    if @aria-readonly is true then exit end
+    if @aria-readonly is "true" then exit end
+    log @aria-readonly
     tell .hyperstars-hover in me
       show you
     end
@@ -91,7 +108,7 @@ behavior HyperstarsSlideable
   end
 
   on mouseleave
-    if @aria-readonly is true then exit end
+    if @aria-readonly is "true" then exit end
     tell .hyperstars-hover in me
       hide you
     end
@@ -101,7 +118,7 @@ behavior HyperstarsSlideable
   end
 
   on mousemove(pageX)
-    if @aria-readonly is true then exit end
+    if @aria-readonly is "true" then exit end
     set max to @aria-valuemax as Number
     set min to @aria-valuemin as Number
     set stars to max - min
@@ -127,7 +144,7 @@ behavior HyperstarsSlideable
   end
 
   on mouseup(pageX)
-    if @aria-readonly is true then exit end
+    if @aria-readonly is "true" then exit end
     set max to @aria-valuemax as Number
     set min to @aria-valuemin as Number
     set stars to max - min
@@ -157,6 +174,13 @@ behavior HyperstarsSlideable
   on touchend(event)
     halt the event
     trigger mouseup(pageX: event.changedTouches[0].pageX)
+  end
+
+  on reset
+    set @aria-valuenow to 0
+    tell .hyperstars-selected in me
+      set your *width to "0px"
+    end
   end
 
 end
