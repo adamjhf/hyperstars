@@ -4,7 +4,7 @@
 ## Quick start
 Several quick start options are available:
 
-* [Download the latest release](https://github.com/adamjhf/hyperstars/archive/main.zip).
+* [Download the latest release](https://github.com/adamjhf/hyperstars/archive/refs/tags/v0.1.zip).
 * Clone the repo: `git clone https://github.com/adamjhf/hyperstars.git`.
 
 See [examples in action](http://adamjhf.github.io/hyperstars/).
