@@ -146,6 +146,7 @@ behavior HyperstarsSlideable
       set your *width to w + "px"
       show you
     end
+    trigger rated(value: value)
   end
 
   on touchmove(event)
