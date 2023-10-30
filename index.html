@@ -4,15 +4,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>hyperstars example</title>
+  <title>_hyperstars examples</title>
   <style>
     body {
-      font-size: 50px;
       margin: 1em;
     }
 
-    p {
-      font-size: 30px;
+    .hyperstars {
+      font-size: 50px;
+    }
+
+    input[type=range] {
+      display: none;
     }
   </style>
   <link href="hyperstars.css" rel="stylesheet" type="text/css" />
@@ -21,15 +24,16 @@
 </head>
 
 <body>
-  <p>Default:</p>
+  <h1>_hyperstars examples</h1>
+  <h2>Default:</h2>
   <span _="install Hyperstars()"></span>
-  <p>With reset button:</p>
+  <h2>With reset button:</h2>
   <span _="install Hyperstars(resettable: true)"></span>
-  <p>With custom input:</p>
+  <h2>With custom input:</h2>
   <span _="install Hyperstars()">
     <input type="range" min="2" max="10" step="1" value="5">
   </span>
-  <p>Readonly/disabled:</p>
+  <h2>Readonly/disabled:</h2>
   <span _="install Hyperstars()">
     <input type="range" value="2.5" readonly>
   </span>
