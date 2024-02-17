@@ -48,7 +48,7 @@ behavior Hyperstars(inputHandle, resettable, icon, resetIcon)
       set @aria-label of it to "star rating reset"
       set @_ of it to "on click send reset to next .hyperstars-slider"
       put span into it
-      put it into me
+      put it at the end of me
     end
 
     make a <div.hyperstars-slider/>
@@ -148,6 +148,8 @@ behavior HyperstarsSlideable
     set value to calculateStarValue(x, pageX, min, max, step, width)
     set w to calculateStarWidth(value, min, max, width)
     set @aria-valuenow to value
+    tell first <input[type="range"]/> in my parentElement
+      set @value to value
     tell .hyperstars-hover in me
       hide you
     end
