@@ -3,6 +3,7 @@
   display: inline-block;
   position: relative;
   line-height: 1em;
+  text-wrap: nowrap;
   cursor: default;
 }
 
